@@ -5,15 +5,32 @@ import { v4 as uuidv4 } from 'uuid';
 const baseURL = "https://passlock-backend.onrender.com";
 
 export const savePass = async (form) => {
-    const newPassword = { ...form, id: uuidv4() }; 
-    let res = await fetch(`${baseURL}/`, {
-        method: "POST",
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(newPassword)
-    });
+    const newPassword = { ...form, id: uuidv4() };
+    try {
+        let res = await fetch(`${baseURL}/`, {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(newPassword)
+        });
+        if (!res.ok) {
+            throw new Error(`Failed to save password: ${res.statusText}`);
+        }
+    } catch (error) {
+        toast.error("Error saving password. Please try again later.", {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            theme: "dark",
+            transition: Bounce,
+        });
+    }
 };
+
 
 export const getPass = async () => {
     try {
@@ -36,6 +53,7 @@ export const getPass = async () => {
         return [];
     }
 };
+
 
 export const deletePass = async (id) => {
     let confirmation = confirm("Are you sure you want to delete this password?");

@@ -12,9 +12,17 @@ const url = process.env.MONGO_URI;
 
 app.use(bodyParser.json());
 
+// Update allowedOrigins to use the correct protocol
+const allowedOrigins = ['http://localhost:5173', 'https://passlock-frontend.onrender.com'];
 
 app.use(cors({
-    origin: 'https://passlock-backend.onrender.com', 
+    origin: (origin, callback) => {
+        if (allowedOrigins.includes(origin) || !origin) { // Allow requests with no origin (e.g., Postman)
+            callback(null, true);
+        } else {
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true
 }));
