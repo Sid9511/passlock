@@ -13,7 +13,7 @@ const url = process.env.MONGO_URI;
 app.use(bodyParser.json());
 
 // Update allowedOrigins to use the correct protocol
-const allowedOrigins = ['http://localhost:5173', 'https://passlock-frontend.onrender.com'];
+const allowedOrigins = ['http://localhost:5173', 'https://sid9511.github.io/passlock/pass'];
 
 app.use(cors({
     origin: (origin, callback) => {
