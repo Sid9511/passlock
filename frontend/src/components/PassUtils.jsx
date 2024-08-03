@@ -2,10 +2,11 @@ import { toast, Bounce, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { v4 as uuidv4 } from 'uuid';
 
+const baseURL = "http://localhost:3002";
 
 export const savePass = async (form) => {
     const newPassword = { ...form, id: uuidv4() }; 
-    let res = await fetch("http://localhost:3002/", {
+    let res = await fetch(`${baseURL}/`, {
         method: "POST",
         headers: {
             'Content-Type': 'application/json'
@@ -14,16 +15,14 @@ export const savePass = async (form) => {
     });
 };
 
-
 export const getPass = async () => {
     try {
-        let req = await fetch("http://localhost:3002/");
+        let req = await fetch(`${baseURL}/`);
         if (!req.ok) {throw new Error(`Failed to fetch passwords: ${req.statusText}`);}
         let pass = await req.json();
         return pass; 
     } 
     catch (error) {
-        // console.error("Error fetching passwords:", error);
         toast.error("Error fetching passwords. Please check if the server is running and reachable.", {
             position: "top-right",
             autoClose: 5000,
@@ -38,15 +37,13 @@ export const getPass = async () => {
     }
 };
 
-
 export const deletePass = async (id) => {
     let confirmation = confirm("Are you sure you want to delete this password?");
     if (confirmation) {
         try {
-            let res = await fetch(`http://localhost:3002/passwords/${id}`, {
+            let res = await fetch(`${baseURL}/passwords/${id}`, {
                 method: "DELETE",
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify(id),
+                headers: { 'Content-Type': 'application/json' },
             });
 
             if (res.ok) {
@@ -63,10 +60,8 @@ export const deletePass = async (id) => {
                     transition: Bounce,
                 });
                 return updatedPasswords;
-            } 
-            else {
+            } else {
                 const errorData = await res.json();
-                // console.error("Failed to delete password on the server.", errorData);
                 toast.error("Failed to delete password on the server: " + (errorData.message || res.statusText), {
                     position: "top-right",
                     autoClose: 5000,
@@ -79,9 +74,7 @@ export const deletePass = async (id) => {
                 });
                 return await getPass(); 
             }
-        } 
-        catch (error) {
-            // console.error("Error deleting password:", error);
+        } catch (error) {
             toast.error("Error deleting password. Please try again later.", {
                 position: "top-right",
                 autoClose: 5000,
@@ -94,17 +87,13 @@ export const deletePass = async (id) => {
             });
             return await getPass();
         }
-    } 
-    else {
+    } else {
         return await getPass();
     }
 };
 
-
 export const updatePass = async (updatePass) => {
-    // console.log("Editing password with id:", updatePass.id);
-
-    let res = await fetch(`http://localhost:3002/passwords/${updatePass.id}`, {
+    let res = await fetch(`${baseURL}/passwords/${updatePass.id}`, {
         method: "PUT",
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify(updatePass)
@@ -120,7 +109,6 @@ export const updatePass = async (updatePass) => {
     return passToUpdate;
 };
 
-
 export const copyPass = (pass) => {
     const textToCopy = `Username: ${pass.username}\nSite: ${pass.site}\nPassword: ${pass.password}`;
     navigator.clipboard.writeText(textToCopy).then(() => {
@@ -135,7 +123,6 @@ export const copyPass = (pass) => {
             transition: Bounce,
         });
     }).catch((err) => {
-        // console.error('Failed to copy: ', err);
         toast.error("Failed to copy password details.", {
             position: "top-right",
             autoClose: 5000,
@@ -148,7 +135,6 @@ export const copyPass = (pass) => {
         });
     });
 };
-
 
 export const ToastContainerComponent = () => (
     <ToastContainer
@@ -167,7 +153,6 @@ export const ToastContainerComponent = () => (
     />
 );
 
-
 export const scrollToTop = () => {
     const tableContainer = document.querySelector('.table-container');
     let currentPosition = tableContainer.scrollTop;
@@ -183,7 +168,6 @@ export const scrollToTop = () => {
         }
     }, 10);
 };
-
 
 export const scrollToBottom = () => {
     const tableContainer = document.querySelector('.table-container');

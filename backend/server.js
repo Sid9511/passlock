@@ -11,22 +11,22 @@ const port = process.env.PORT || 3002;
 const url = process.env.MONGO_URI;
 
 app.use(bodyParser.json());
-app.use(cors());
+
+// Setup CORS to allow requests from your frontend
+app.use(cors({
+    origin: 'http://localhost:5173', // Replace this with your frontend URL
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    credentials: true
+}));
 
 let client; 
 
-
-MongoClient.connect(url, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true
-}).then((connectedClient) => {
+MongoClient.connect(url).then((connectedClient) => {
     client = connectedClient; 
     console.log('Connected successfully to MongoDB');
 }).catch((err) => {
     console.error('Error connecting to MongoDB', err);
 });
-
-
 
 app.get('/', async (req, res) => {
     try {
@@ -41,8 +41,6 @@ app.get('/', async (req, res) => {
     }
 });
 
-
-
 app.post('/', async (req, res) => {
     try {
         const password = req.body;
@@ -56,8 +54,6 @@ app.post('/', async (req, res) => {
         res.status(500).send({ error: 'Failed to save password' });
     }
 });
-
-
 
 app.delete('/passwords/:id', async (req, res) => {
     const id = req.params.id;
@@ -82,8 +78,6 @@ app.delete('/passwords/:id', async (req, res) => {
     }
 });
 
-
-
 app.put('/passwords/:id', async (req, res) => {
     try {
         const id = req.params.id;
@@ -107,8 +101,6 @@ app.put('/passwords/:id', async (req, res) => {
         res.status(500).send({ error: 'Failed to update password' });
     }
 });
-
-
 
 app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`);
