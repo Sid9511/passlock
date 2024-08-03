@@ -2,7 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');
 const bodyParser = require('body-parser');
-const { MongoClient } = require('mongodb');
+const { MongoClient, ObjectId } = require('mongodb');
 
 dotenv.config();
 
@@ -20,14 +20,14 @@ const corsOptions = {
     ],
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,
-    allowedHeaders: ['Origin', 'X-Requested-With', 'Content-Type', 'Accept']
+    allowedHeaders: ['Content-Type', 'Authorization']
 };
 
-// Apply CORS middleware globally
 app.use(cors(corsOptions));
-
-// Apply bodyParser middleware globally
 app.use(bodyParser.json());
+
+// Handle preflight requests for all routes
+app.options('*', cors(corsOptions));
 
 let client;
 
@@ -39,9 +39,6 @@ MongoClient.connect(url, { useNewUrlParser: true, useUnifiedTopology: true })
     .catch((err) => {
         console.error('Error connecting to MongoDB', err);
     });
-
-// Handle preflight requests globally
-app.options('*', cors(corsOptions));
 
 app.get('/', async (req, res) => {
     try {
@@ -78,7 +75,7 @@ app.delete('/passwords/:id', async (req, res) => {
         console.log('Deleting password with ID:', id);
         const db = client.db('passlock');
         const collection = db.collection('Passwords');
-        const deleteResult = await collection.deleteOne({ id: id });
+        const deleteResult = await collection.deleteOne({ _id: new ObjectId(id) });
 
         if (deleteResult.deletedCount) {
             return res.send({ success: true, result: deleteResult });
@@ -97,7 +94,7 @@ app.put('/passwords/:id', async (req, res) => {
         const db = client.db('passlock');
         const collection = db.collection('Passwords');
         const updateResult = await collection.updateOne(
-            { id: id },
+            { _id: new ObjectId(id) },
             { $set: updatedPassword }
         );
 
