@@ -2,7 +2,7 @@ import { toast, Bounce, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { v4 as uuidv4 } from 'uuid';
 
-const baseURL = "http://localhost:3002";
+const baseURL = "https://passlock-backend.onrender.com";
 
 export const savePass = async (form) => {
     const newPassword = { ...form, id: uuidv4() }; 
