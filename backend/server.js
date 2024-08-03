@@ -11,25 +11,36 @@ const port = process.env.PORT || 3002;
 const url = process.env.MONGO_URI;
 
 const corsOptions = {
-    origin: ['http://localhost:5173', 'http://localhost:5174/passlock', 'http://localhost:5174/passlock/pass', 'https://sid9511.github.io', 'https://passlock-frontend.onrender.com'],
+    origin: [
+        'http://localhost:5173',
+        'http://localhost:5174/passlock',
+        'http://localhost:5174/passlock/pass',
+        'https://sid9511.github.io',
+        'https://passlock-frontend.onrender.com'
+    ],
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-    credentials: true
+    credentials: true,
+    allowedHeaders: ['Origin', 'X-Requested-With', 'Content-Type', 'Accept']
 };
 
+// Apply CORS middleware globally
 app.use(cors(corsOptions));
 
+// Apply bodyParser middleware globally
 app.use(bodyParser.json());
 
 let client;
 
-MongoClient.connect(url).then((connectedClient) => {
-    client = connectedClient;
-    console.log('Connected successfully to MongoDB');
-}).catch((err) => {
-    console.error('Error connecting to MongoDB', err);
-});
+MongoClient.connect(url, { useNewUrlParser: true, useUnifiedTopology: true })
+    .then((connectedClient) => {
+        client = connectedClient;
+        console.log('Connected successfully to MongoDB');
+    })
+    .catch((err) => {
+        console.error('Error connecting to MongoDB', err);
+    });
 
-// Handle preflight requests for all routes
+// Handle preflight requests globally
 app.options('*', cors(corsOptions));
 
 app.get('/', async (req, res) => {
