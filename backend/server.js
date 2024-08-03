@@ -12,20 +12,12 @@ const url = process.env.MONGO_URI;
 
 app.use(bodyParser.json());
 
-// Update allowedOrigins to use the correct protocol
-const allowedOrigins = ['http://localhost:5173', 'https://sid9511.github.io/passlock/pass'];
-
 app.use(cors({
-    origin: (origin, callback) => {
-        if (allowedOrigins.includes(origin) || !origin) { // Allow requests with no origin (e.g., Postman)
-            callback(null, true);
-        } else {
-            callback(new Error('Not allowed by CORS'));
-        }
-    },
+    origin: ['http://localhost:5173', 'https://sid9511.github.io'], // Add both your local and production origins
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true
 }));
+
 
 let client; 
 
