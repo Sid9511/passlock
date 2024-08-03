@@ -10,11 +10,13 @@ const app = express();
 const port = process.env.PORT || 3002;
 const url = process.env.MONGO_URI;
 
-app.use(cors({
+const corsOptions = {
     origin: ['http://localhost:5173', 'http://localhost:5174/passlock', 'http://localhost:5174/passlock/pass', 'https://sid9511.github.io', 'https://passlock-frontend.onrender.com'],
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true
-}));
+};
+
+app.use(cors(corsOptions));
 
 app.use(bodyParser.json());
 
@@ -27,21 +29,8 @@ MongoClient.connect(url).then((connectedClient) => {
     console.error('Error connecting to MongoDB', err);
 });
 
-// Middleware to set headers for all responses
-app.use((req, res, next) => {
-    res.header('Access-Control-Allow-Origin', '*');
-    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
-    res.header('Access-Control-Allow-Methods', 'GET,HEAD,PUT,PATCH,POST,DELETE');
-    next();
-});
-
-// Handle preflight requests
-app.options('*', (req, res) => {
-    res.header('Access-Control-Allow-Origin', '*');
-    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
-    res.header('Access-Control-Allow-Methods', 'GET,HEAD,PUT,PATCH,POST,DELETE');
-    res.send();
-});
+// Handle preflight requests for all routes
+app.options('*', cors(corsOptions));
 
 app.get('/', async (req, res) => {
     try {
