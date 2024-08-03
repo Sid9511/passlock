@@ -10,7 +10,6 @@ const app = express();
 const port = process.env.PORT || 3002;
 const url = process.env.MONGO_URI;
 
-
 app.use(cors({
     origin: ['http://localhost:5173', 'http://localhost:5174/passlock', 'http://localhost:5174/passlock/pass', 'https://sid9511.github.io', 'https://passlock-frontend.onrender.com'],
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
@@ -35,6 +34,9 @@ app.use((req, res, next) => {
     res.header('Access-Control-Allow-Methods', 'GET,HEAD,PUT,PATCH,POST,DELETE');
     next();
 });
+
+// Handle preflight requests
+app.options('*', cors());
 
 app.get('/', async (req, res) => {
     try {
