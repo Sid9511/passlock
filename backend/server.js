@@ -12,9 +12,9 @@ const url = process.env.MONGO_URI;
 
 app.use(bodyParser.json());
 
-// Setup CORS to allow requests from your frontend
+
 app.use(cors({
-    origin: 'http://localhost:5173', // Replace this with your frontend URL
+    origin: 'https://passlock-backend.onrender.com', 
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true
 }));

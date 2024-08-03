@@ -8,11 +8,11 @@ const Navbar = () => {
             <nav className="sticky top-0 z-10 block text-white bg-neutral-800 rounded-xl shadow-md h-max border-white/80 bg-opacity-80 backdrop-blur-2xl backdrop-saturate-200 md:px-2 md:py-1">
                 
                 <div className="flex items-center justify-between text-blue-gray-900">
-                    <a className="ml-6 block cursor-pointer font-sans text-2xl font-medium leading-relaxed text-inherit antialiased">
+                    <Link to="/" className="ml-6 block cursor-pointer font-sans text-2xl font-medium leading-relaxed text-inherit antialiased">
                         <span className="text-blue-400 text-2xl">&lt;</span>
                         Pass
                         <span className="text-blue-400 text-2xl">Lock/&gt;</span>
-                    </a>
+                    </Link>
 
                     <div className="flex items-center mr-2 lg:mr-8 gap-4 lg:gap-16">
                         <div className="block">
