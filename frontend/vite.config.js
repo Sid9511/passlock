@@ -9,5 +9,14 @@ export default defineConfig({
       '@': fileURLToPath(new URL('./src', import.meta.url)),
     },
   },
-  base: "/passlock/",
+  base: './', // Ensure this matches your deployment path
+  build: {
+    outDir: 'dist', // Output directory for the build
+    assetsDir: 'assets', // Directory for assets inside the output directory
+    rollupOptions: {
+      input: {
+        main: fileURLToPath(new URL('./index.html', import.meta.url)),
+      },
+    },
+  },
 });
