@@ -1,8 +1,8 @@
-const { MongoClient } = require('mongodb'); 
 const express = require('express');
+const cors = require('cors');
 const dotenv = require('dotenv');
 const bodyParser = require('body-parser');
-const cors = require('cors');
+const { MongoClient } = require('mongodb');
 
 dotenv.config();
 
@@ -10,22 +10,30 @@ const app = express();
 const port = process.env.PORT || 3002;
 const url = process.env.MONGO_URI;
 
-app.use(bodyParser.json());
 
 app.use(cors({
-    origin: ['http://localhost:5173', 'https://sid9511.github.io'], // Add both your local and production origins
+    origin: ['http://localhost:5173', 'http://localhost:5174/passlock', 'http://localhost:5174/passlock/pass', 'https://sid9511.github.io', 'https://passlock-frontend.onrender.com'],
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true
 }));
 
+app.use(bodyParser.json());
 
-let client; 
+let client;
 
 MongoClient.connect(url).then((connectedClient) => {
-    client = connectedClient; 
+    client = connectedClient;
     console.log('Connected successfully to MongoDB');
 }).catch((err) => {
     console.error('Error connecting to MongoDB', err);
+});
+
+// Middleware to set headers for all responses
+app.use((req, res, next) => {
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+    res.header('Access-Control-Allow-Methods', 'GET,HEAD,PUT,PATCH,POST,DELETE');
+    next();
 });
 
 app.get('/', async (req, res) => {
@@ -34,8 +42,7 @@ app.get('/', async (req, res) => {
         const collection = db.collection('Passwords');
         const findResult = await collection.find({}).toArray();
         res.json(findResult);
-    } 
-    catch (error) {
+    } catch (error) {
         console.error('Error fetching passwords:', error);
         res.status(500).send({ error: 'Failed to fetch passwords' });
     }
@@ -48,8 +55,7 @@ app.post('/', async (req, res) => {
         const collection = db.collection('Passwords');
         const insertResult = await collection.insertOne(password);
         res.status(201).send({ success: true, result: insertResult });
-    } 
-    catch (error) {
+    } catch (error) {
         console.error('Error saving password:', error);
         res.status(500).send({ error: 'Failed to save password' });
     }
@@ -62,7 +68,7 @@ app.delete('/passwords/:id', async (req, res) => {
         return res.status(400).send({ success: false, message: 'ID is required' });
     }
     try {
-        console.log('Deleting password with ID:', id); 
+        console.log('Deleting password with ID:', id);
         const db = client.db('passlock');
         const collection = db.collection('Passwords');
         const deleteResult = await collection.deleteOne({ id: id });
@@ -71,8 +77,7 @@ app.delete('/passwords/:id', async (req, res) => {
             return res.send({ success: true, result: deleteResult });
         }
         res.status(404).send({ success: false, message: 'Password not found' });
-    } 
-    catch (error) {
+    } catch (error) {
         console.error('Error deleting password:', error);
         res.status(500).send({ error: 'Failed to delete password' });
     }
@@ -91,12 +96,10 @@ app.put('/passwords/:id', async (req, res) => {
 
         if (updateResult.matchedCount > 0) {
             res.send({ success: true, result: updateResult });
-        }
-        else {
+        } else {
             res.status(404).send({ success: false, message: 'Password not found' });
         }
-    } 
-    catch (error) {
+    } catch (error) {
         console.error('Error updating password:', error);
         res.status(500).send({ error: 'Failed to update password' });
     }

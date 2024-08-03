@@ -9,7 +9,7 @@ export const savePass = async (form) => {
     try {
         let res = await fetch(`${baseURL}/`, {
             method: "POST",
-            headers: {
+            headers: {  
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify(newPassword)
