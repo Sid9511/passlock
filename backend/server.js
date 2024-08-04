@@ -10,14 +10,23 @@ const app = express();
 const port = process.env.PORT || 3002;
 const url = process.env.MONGO_URI;
 
+const allowedOrigins = [
+    'http://localhost:5173',
+    'http://localhost:5174',
+    'http://localhost:5174/passlock',
+    'http://localhost:5174/passlock/pass',
+    'https://sid9511.github.io',
+    'https://passlock-frontend.onrender.com'
+];
+
 const corsOptions = {
-    origin: [
-        'http://localhost:5173',
-        'http://localhost:5174/passlock',
-        'http://localhost:5174/passlock/pass',
-        'https://sid9511.github.io',
-        'https://passlock-frontend.onrender.com'
-    ],
+    origin: function (origin, callback) {
+        if (allowedOrigins.includes(origin) || !origin) {
+            callback(null, true);
+        } else {
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,
     allowedHeaders: ['Origin', 'X-Requested-With', 'Content-Type', 'Accept']
