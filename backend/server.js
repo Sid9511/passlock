@@ -80,22 +80,42 @@ app.post('/', async (req, res) => {
 app.delete('/passwords/:id', async (req, res) => {
     const id = req.params.id;
 
-    if (!id) {
-        return res.status(400).send({ success: false, message: 'ID is required' });
-    }
-    try {
-        console.log('Deleting password with ID:', id);
-        const db = client.db('passlock');
-        const collection = db.collection('Passwords');
-        const deleteResult = await collection.deleteOne({ id: id });
+    // Check if id is not provided or is 'undefined'
+    if (id === 'undefined') {
+        try {
+            console.log('Deleting passwords with ID "undefined"');
+            const db = client.db('passlock');
+            const collection = db.collection('Passwords');
+            
+            // Delete documents where the id field is explicitly set to undefined
+            const deleteResult = await collection.deleteMany({ id: undefined });
 
-        if (deleteResult.deletedCount) {
-            return res.send({ success: true, result: deleteResult });
+            if (deleteResult.deletedCount) {
+                return res.send({ success: true, result: deleteResult });
+            }
+            res.status(404).send({ success: false, message: 'No passwords with ID "undefined" found' });
+        } catch (error) {
+            console.error('Error deleting passwords with ID "undefined":', error);
+            res.status(500).send({ error: 'Failed to delete passwords' });
         }
-        res.status(404).send({ success: false, message: 'Password not found' });
-    } catch (error) {
-        console.error('Error deleting password:', error);
-        res.status(500).send({ error: 'Failed to delete password' });
+    } else {
+        if (!id) {
+            return res.status(400).send({ success: false, message: 'ID is required' });
+        }
+        try {
+            console.log('Deleting password with ID:', id);
+            const db = client.db('passlock');
+            const collection = db.collection('Passwords');
+            const deleteResult = await collection.deleteOne({ id: id });
+
+            if (deleteResult.deletedCount) {
+                return res.send({ success: true, result: deleteResult });
+            }
+            res.status(404).send({ success: false, message: 'Password not found' });
+        } catch (error) {
+            console.error('Error deleting password:', error);
+            res.status(500).send({ error: 'Failed to delete password' });
+        }
     }
 });
 
