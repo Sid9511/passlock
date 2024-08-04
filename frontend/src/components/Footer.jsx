@@ -2,7 +2,7 @@ import { Heart } from '../assets/Icons';
 
 const Footer = () => {
   return (
-    <div className='bg-slate-800 text-white flex flex-col justify-center items-center w-full '>
+    <div className='bg-slate-800 text-white flex flex-col justify-center items-center w-full'>
       <div className="logo font-bold text-white text-lg pt-2"> 
         <span className='text-blue-400'> &lt;</span>
         <span>Pass</span>
