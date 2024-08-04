@@ -4,6 +4,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 const baseURL = "https://passlock-backend.onrender.com";
 
+
 export const savePass = async (form) => {
     const newPassword = { ...form, id: uuidv4() };
     try {
@@ -17,7 +18,8 @@ export const savePass = async (form) => {
         if (!res.ok) {
             throw new Error(`Failed to save password: ${res.statusText}`);
         }
-    } catch (error) {
+    } 
+    catch (error) {
         toast.error("Error saving password. Please try again later.", {
             position: "top-right",
             autoClose: 5000,
@@ -78,7 +80,8 @@ export const deletePass = async (id) => {
                     transition: Bounce,
                 });
                 return updatedPasswords;
-            } else {
+            } 
+            else {
                 const errorData = await res.json();
                 toast.error("Failed to delete password on the server: " + (errorData.message || res.statusText), {
                     position: "top-right",
@@ -92,7 +95,8 @@ export const deletePass = async (id) => {
                 });
                 return await getPass(); 
             }
-        } catch (error) {
+        } 
+        catch (error) {
             toast.error("Error deleting password. Please try again later.", {
                 position: "top-right",
                 autoClose: 5000,
@@ -105,10 +109,12 @@ export const deletePass = async (id) => {
             });
             return await getPass();
         }
-    } else {
+    } 
+    else {
         return await getPass();
     }
 };
+
 
 export const updatePass = async (updatePass) => {
     let res = await fetch(`${baseURL}/passwords/${updatePass.id}`, {
@@ -126,6 +132,7 @@ export const updatePass = async (updatePass) => {
     localStorage.setItem("passwords", JSON.stringify(passToUpdate));
     return passToUpdate;
 };
+
 
 export const copyPass = (pass) => {
     const textToCopy = `Username: ${pass.username}\nSite: ${pass.site}\nPassword: ${pass.password}`;
@@ -154,6 +161,7 @@ export const copyPass = (pass) => {
     });
 };
 
+
 export const ToastContainerComponent = () => (
     <ToastContainer
         position="top-right"
@@ -171,6 +179,7 @@ export const ToastContainerComponent = () => (
     />
 );
 
+
 export const scrollToTop = () => {
     const tableContainer = document.querySelector('.table-container');
     let currentPosition = tableContainer.scrollTop;
@@ -186,6 +195,7 @@ export const scrollToTop = () => {
         }
     }, 10);
 };
+
 
 export const scrollToBottom = () => {
     const tableContainer = document.querySelector('.table-container');

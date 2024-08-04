@@ -19,19 +19,15 @@ const LabelInputContainer = ({ children, className }) => {
     );
 };
 
-const Home = () => {
-    
+
+const Home = () => {    
     const eyeRef = useRef(null);
     const passwordRef = useRef(null);
     const [form, setForm] = useState({ username: "", site: "", password: "" });
     
-    
-    
     const handleChange = (e) => {
         setForm({ ...form, [e.target.name]: e.target.value });
     };
-    
-
     
     const showPass = () => {
         if (eyeRef.current.src.includes(closedeye)) {
@@ -44,8 +40,6 @@ const Home = () => {
         }
     };
     
-
-
     const handleSave = () => {
         setForm({ username: "", site: "", password: "" });
 
@@ -75,8 +69,6 @@ const Home = () => {
             });
         }
     };
-
-
 
 
     return (

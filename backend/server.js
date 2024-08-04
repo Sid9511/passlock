@@ -16,6 +16,8 @@ const allowedOrigins = [
     'http://localhost:5174/passlock',
     'http://localhost:5174/passlock/pass',
     'https://sid9511.github.io',
+    'https://sid9511.github.io/passlock',
+    'https://sid9511.github.io/passlock/pass',
     'https://passlock-frontend.onrender.com'
 ];
 
@@ -32,14 +34,13 @@ const corsOptions = {
     allowedHeaders: ['Origin', 'X-Requested-With', 'Content-Type', 'Accept']
 };
 
-// Apply CORS middleware globally
+
 app.use(cors(corsOptions));
 
-// Handle preflight requests globally
 app.options('*', cors(corsOptions));
 
-// Apply bodyParser middleware globally
 app.use(bodyParser.json());
+
 
 let client;
 
@@ -52,17 +53,20 @@ MongoClient.connect(url, { useNewUrlParser: true, useUnifiedTopology: true })
         console.error('Error connecting to MongoDB', err);
     });
 
+
 app.get('/', async (req, res) => {
     try {
         const db = client.db('passlock');
         const collection = db.collection('Passwords');
         const findResult = await collection.find({}).toArray();
         res.json(findResult);
-    } catch (error) {
+    } 
+    catch (error) {
         console.error('Error fetching passwords:', error);
         res.status(500).send({ error: 'Failed to fetch passwords' });
     }
 });
+
 
 app.post('/', async (req, res) => {
     try {
@@ -71,34 +75,36 @@ app.post('/', async (req, res) => {
         const collection = db.collection('Passwords');
         const insertResult = await collection.insertOne(password);
         res.status(201).send({ success: true, result: insertResult });
-    } catch (error) {
+    } 
+    catch (error) {
         console.error('Error saving password:', error);
         res.status(500).send({ error: 'Failed to save password' });
     }
 });
 
+
 app.delete('/passwords/:id', async (req, res) => {
     const id = req.params.id;
 
-    // Check if id is not provided or is 'undefined'
     if (id === 'undefined') {
         try {
             console.log('Deleting passwords with ID "undefined"');
             const db = client.db('passlock');
             const collection = db.collection('Passwords');
             
-            // Delete documents where the id field is explicitly set to undefined
             const deleteResult = await collection.deleteMany({ id: undefined });
 
             if (deleteResult.deletedCount) {
                 return res.send({ success: true, result: deleteResult });
             }
             res.status(404).send({ success: false, message: 'No passwords with ID "undefined" found' });
-        } catch (error) {
+        } 
+        catch (error) {
             console.error('Error deleting passwords with ID "undefined":', error);
             res.status(500).send({ error: 'Failed to delete passwords' });
         }
-    } else {
+    } 
+    else {
         if (!id) {
             return res.status(400).send({ success: false, message: 'ID is required' });
         }
@@ -112,12 +118,14 @@ app.delete('/passwords/:id', async (req, res) => {
                 return res.send({ success: true, result: deleteResult });
             }
             res.status(404).send({ success: false, message: 'Password not found' });
-        } catch (error) {
+        } 
+        catch (error) {
             console.error('Error deleting password:', error);
             res.status(500).send({ error: 'Failed to delete password' });
         }
     }
 });
+
 
 app.put('/passwords/:id', async (req, res) => {
     try {
@@ -132,14 +140,17 @@ app.put('/passwords/:id', async (req, res) => {
 
         if (updateResult.matchedCount > 0) {
             res.send({ success: true, result: updateResult });
-        } else {
+        } 
+        else {
             res.status(404).send({ success: false, message: 'Password not found' });
         }
-    } catch (error) {
+    } 
+    catch (error) {
         console.error('Error updating password:', error);
         res.status(500).send({ error: 'Failed to update password' });
     }
 });
+
 
 app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`);

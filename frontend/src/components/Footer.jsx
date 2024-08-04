@@ -8,6 +8,7 @@ const Footer = () => {
         <span>Pass</span>
         <span className='text-blue-400'>Lock/&gt;</span>
       </div>
+      
       <div className='flex justify-center items-center text-[12px]'> 
         Created with 
         <div className='w-7 mx-2'>
