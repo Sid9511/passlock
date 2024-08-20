@@ -81,7 +81,7 @@ const Home = () => {
                     <span className="text-blue-400 text-3xl">Lock/&gt;</span>
                 </h1>
                 <p className="text-center text-white text-xs opacity-80 m-3">
-                    Your Own Personal Password Manager
+                    Your Own Personal Password Manager on Cloud
                 </p>
             </div>
 
